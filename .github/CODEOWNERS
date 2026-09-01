@@ -1,0 +1,18 @@
+# Fallback triage owner for paths without a more specific rule.
+* @PhilGreen736767 @maxderhak @dwtza
+
+# GitHub configuration, Actions workflows & PR automation
+/.github/** @dwtza @maxderhak
+
+# Governance
+/AGENTS.md @PhilGreen736767 @maxderhak @dwtza
+/CODE_OF_CONDUCT.md @PhilGreen736767 @maxderhak @dwtza
+/CONTRIBUTING.md @PhilGreen736767 @maxderhak @dwtza
+/LICENSE.md @PhilGreen736767 @maxderhak @dwtza
+/SECURITY.md @PhilGreen736767 @maxderhak @dwtza
+/README.md @PhilGreen736767 @maxderhak @dwtza
+/.github/CODEOWNERS @PhilGreen736767 @maxderhak @dwtza
+
+# Specifications
+**/ICS-*.md @PhilGreen736767 @maxderhak @dwtza
+**/ICS-*.pdf @PhilGreen736767 @maxderhak @dwtza

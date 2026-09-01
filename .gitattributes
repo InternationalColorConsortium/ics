@@ -1,0 +1,35 @@
+# Line endings and file types for ICS packages.
+#
+# ICS packages ship a matched pair of driver scripts that must stay
+# functionally equivalent across platforms: BuildAndTest.sh (POSIX) and
+# BuildAndTest.bat (Windows). Each requires its own line endings to run at
+# all, so the rules below are enforced in the repository rather than left to
+# each contributor's core.autocrlf setting.
+
+# Default: detect text vs binary, normalize text to LF in the repository and
+# in the working tree. Binary files are left untouched.
+* text=auto eol=lf
+
+# --- Driver scripts -----------------------------------------------------
+# bash rejects a script whose lines end in CRLF ("bad interpreter: no such
+# file or directory"), so .sh must be LF even when checked out on Windows.
+*.sh text eol=lf
+
+# cmd.exe mis-parses a batch file with bare LF line endings, notably around
+# multi-line blocks and labels, so .bat must be CRLF everywhere.
+*.bat text eol=crlf
+
+# --- Package sources ----------------------------------------------------
+*.json  text eol=lf
+*.xml   text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+
+# --- Binary assets ------------------------------------------------------
+# Marked explicitly so no platform ever rewrites their bytes and so diffs
+# report "Binary files differ" instead of attempting a text diff.
+*.icc   binary
+*.tif   binary
+*.tiff  binary
+*.pdf   binary
+*.png   binary
