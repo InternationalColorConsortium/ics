@@ -1,6 +1,8 @@
 # Generated output directories
 */ICC/
 */Results/
+*.doc
+*.docx
 iccDEV/
 .DS_Store
 Thumbs.db
