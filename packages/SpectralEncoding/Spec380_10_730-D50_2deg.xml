@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IccProfile>
+  <Header>
+    <PreferredCMMType></PreferredCMMType>
+    <ProfileVersion>5.10</ProfileVersion>
+    <ProfileDeviceClass>spac</ProfileDeviceClass>
+	<ProfileDeviceSubClass>sref</ProfileDeviceSubClass>
+	<ProfileSubClassVersion>1.00</ProfileSubClassVersion>
+    <DataColourSpace>nc0024</DataColourSpace>
+	<PCS></PCS>
+    <CreationDateTime>now</CreationDateTime>
+    <ProfileFlags EmbeddedInFile="true" UseWithEmbeddedDataOnly="false"/>
+    <DeviceAttributes ReflectiveOrTransparency="reflective" GlossyOrMatte="glossy" MediaPolarity="positive" MediaColour="colour"/>
+    <RenderingIntent>Absolute Colorimetric</RenderingIntent>
+    <PCSIlluminant>
+      <XYZNumber X="0.964245565128246" Y="1.00000000" Z="0.824679094091967"/>
+    </PCSIlluminant>
+    <ProfileCreator></ProfileCreator>
+    <ProfileID>1</ProfileID>
+		<SpectralPCS>rs0024</SpectralPCS>
+		<SpectralRange>
+			<Wavelengths start="380" end="730" steps="36"/>
+		</SpectralRange>
+  </Header>
+
+  <Tags>
+    <multiLocalizedUnicodeType>
+      <TagSignature>desc</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[380nm to 730nm in 10nm steps spectral reflectance using D50 and standard 2deg observer]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+    <multiProcessElementType>
+      <TagSignature>D2B3</TagSignature>
+	    <MultiProcessElements InputChannels="36" OutputChannels="36"/>
+    </multiProcessElementType>
+	
+    <multiProcessElementType>
+      <TagSignature>B2D3</TagSignature>
+	    <MultiProcessElements InputChannels="36" OutputChannels="36"/>
+    </multiProcessElementType>
+	
+	  <spectralViewingConditionsType>
+			<TagSignature>svcn</TagSignature>
+				<StdObserver>CIE 1931 standard colorimetric observer</StdObserver>
+			<IlluminantXYZ X="154.279290420519" Y="160.00000000" Z="131.948655054715"/>
+			<StdIlluminant>Illuminant D50</StdIlluminant>
+			<ColorTemperature>5000</ColorTemperature>
+			<SurroundXYZ X="154.279290420519" Y="160.00000000" Z="131.948655054715"/>
+    </spectralViewingConditionsType>
+    
+	<XYZType>
+      <TagSignature>wtpt</TagSignature>
+      <XYZNumber X="0.964245565128246" Y="1.00000000" Z="0.824679094091967"/>
+    </XYZType>
+	
+	<float16NumberType>
+		<TagSignature>swpt</TagSignature>
+		<Data>
+		 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000
+		</Data>
+	</float16NumberType>
+    
+	<multiLocalizedUnicodeType>
+      <TagSignature>cprt</TagSignature>
+      <LocalizedText LanguageCountry="enUS"><![CDATA[Copyright 2019 International Color Consortium]]></LocalizedText>
+    </multiLocalizedUnicodeType>
+
+  </Tags>
+</IccProfile>
