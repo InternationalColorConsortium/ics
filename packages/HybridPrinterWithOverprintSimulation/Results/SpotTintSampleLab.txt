@@ -1,0 +1,13 @@
+'Lab '	; Data Format
+icEncodeValue	; Encoding
+
+;Source Data Format: 'nmcl'
+;Source Data Encoding: icEncodeValue
+;Source data is after semicolon
+
+;Profiles applied
+; ICC/P-CMYK-S_Overprint_Profile.icc
+; ICC/C-Lab_int-D50_2deg.icc
+
+   89.6897    4.4260   -6.2141	;{ "Silver" }    1.0000
+   95.0035    0.4490   -6.4092	;{ "Silver" }    0.0000

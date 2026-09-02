@@ -1,0 +1,38 @@
+{
+ "imageFiles": {
+  "dstCompression": true,
+  "dstEmbedIcc": false,
+  "dstImageFile": "Results/TShirtDesignPrevOS-B.tif",
+  "dstPlanar": false,
+  "srcImageFile": "Data/TShirtDesignCMYKW.tif"
+ },
+ "profileSequence": [
+  {
+   "iccEnvVars": [
+    {
+     "name": "bkgX",
+     "value": 0.20990000665187836
+    },
+    {
+     "name": "bkgY",
+     "value": 0.18199999630451202
+    },
+    {
+     "name": "bkgZ",
+     "value": 0.49799999594688416
+    }
+   ],
+   "iccFile": "ICC/P-CMYK-STop_Overprint_Profile.icc",
+   "intent": "relative",
+   "interpolation": "tetrahedral",
+   "transform": "default",
+   "useV5SubProfile": true
+  },
+  {
+   "iccFile": "Data/C-sRGB_v4_ICC_preference.icc",
+   "intent": "relative",
+   "interpolation": "tetrahedral",
+   "transform": "default"
+  }
+ ]
+}
