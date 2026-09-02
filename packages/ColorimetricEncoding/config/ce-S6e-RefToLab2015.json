@@ -1,0 +1,20 @@
+{
+ "dataFiles": {
+  "dstEncoding": "float",
+  "dstType": "legacy",
+  "srcFile": "Data/chartRef.txt",
+  "srcType": "legacy"
+ },
+ "profileSequence": [
+  {
+   "iccFile": "ICC/S-Spec380_10_730-D50_2deg.icc",
+   "intent": "relative",
+   "transform": "default"
+  },
+  {
+   "iccFile": "ICC/E-Lab2015-D50_2deg.icc",
+   "intent": "relative",
+   "transform": "default"
+  }
+ ]
+}
