@@ -13,6 +13,17 @@ and `iccTiffDump`).
 Assume the required `iccDEV` command-line tools are already installed unless the
 task explicitly involves installation or environment setup.
 
+## Build and Test
+Each package has its own `BuildAndTest.bat` and `BuildAndTest.sh`, which `cd` to
+their own directory and build into `ICC/` and `Results/`.
+
+`packages/BuildAndTest.bat` and `packages/BuildAndTest.sh` run every package in
+turn and print a pass/fail summary. They discover packages by looking for a
+`BuildAndTest` script in each subdirectory, so adding a package requires no edit
+there. They verify the `iccDEV` tools are on `PATH` first and stop if any are
+missing, because without them the package scripts silently produce empty output
+directories.
+
 ## Repository Rules
 - Keep changes as small and focused as possible.
 - Modify only the package(s) involved in the requested task.
@@ -24,6 +35,7 @@ task explicitly involves installation or environment setup.
 - Treat `ICC/`, `Results/`, generated profiles, TIFFs, PDFs, and logs as disposable build outputs.
 - Do not commit generated outputs unless the task explicitly requests generated conformance artifacts.
 - Preserve existing script entry points, command-line interfaces, and behavior.
-- Preserve Windows batch and POSIX shell parity when modifying package scripts.
+- Preserve Windows batch and POSIX shell parity when modifying package scripts, and
+  in the `packages/` build-and-test driver.
 - Prefer deterministic outputs suitable for interoperability testing.
 - Use ASCII for new automation and documentation files.

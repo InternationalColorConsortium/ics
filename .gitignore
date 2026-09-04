@@ -1,6 +1,6 @@
 # Generated output directories
-*/ICC/
-*/Results/
+**/ICC/
+**/Results/
 *.doc
 *.docx
 iccDEV/
