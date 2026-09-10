@@ -73,6 +73,6 @@ iccApplyNamedCmm -cfg config/hpwr-S5b-SpectralExtraction.json > Results/cmykGray
 
 cat Results/cmykGraysRef.txt
 
-iccApplySearch   -cfg config/hpwr-S6-SpectralReproduction.json > Results/cmykGraysEst.txt
+iccApplySearch   -cfg config/hpwr-S6a-SpectralReproduction.json > Results/cmykGraysEst.txt
 
 cat Results/cmykGraysEst.txt

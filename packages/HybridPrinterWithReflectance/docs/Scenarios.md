@@ -3,7 +3,7 @@
 This document is a companion to `ICS-HybridPrinterWithReflectance.pdf`
 (the normative form of the ICS, summarised in Annex A of that document)
 and to the top-level `README.md`. It explains, for each scenario
-S1 … S6, exactly which iccDEV tool runs, what the driver JSON expresses,
+S1 … S6b, exactly which iccDEV tool runs, what the driver JSON expresses,
 and what the expected output is.
 
 All paths below are written relative to the package root.
@@ -164,9 +164,9 @@ spectral PCS, so spectral PCS operations are performed. This is the
 
 ---
 
-## S6 — Inverse spectral reproduction
+## S6a — Inverse spectral reproduction (colour list)
 
-**Driver:** `iccApplySearch -cfg config/hpwr-S6-SpectralReproduction.json > Results/cmykGraysEst.txt`
+**Driver:** `iccApplySearch -cfg config/hpwr-S6a-SpectralReproduction.json > Results/cmykGraysEst.txt`
 
 Closes the round trip. Given the 36-channel reflectance produced by S5b,
 search for CMYK percentages that, when run through the hybrid profile,
@@ -191,6 +191,57 @@ profileSequence (objective):
 
 ---
 
+## S6b — Inverse spectral reproduction (image)
+
+**Driver:** `iccApplyProfiles -cfg config/hpwr-S6b-SpectralImageReproduction.json`
+
+Not run by `BuildAndTest.{bat,sh}` — driven by
+`SpectralImageReproduction.{bat,sh}` instead, because it runs a search per
+pixel and costs minutes on modest hardware. Run `BuildAndTest` first; this
+scenario needs the profiles it builds in `ICC/`.
+
+The same inverse search as S6a, applied to an image rather than a colour
+list. `connect.useSearch` tells `iccApplyProfiles` to build a search CMM
+instead of a forward chain, and the chain itself lives in a `searchApply`
+block spelled exactly as `iccApplySearch` spells it — so the S6a block moves
+into S6b unchanged apart from the source profile:
+
+```
+src   : Data/MS_smCows.tif                (600x420, 8-channel multispectral,
+                                           embedded v5 sub-profile carrying
+                                           380…730 nm reflectance)
+connect: useSearch true, threads 0        (0 = hardware concurrency; a search
+                                           CMM gives every worker private
+                                           apply state, so the threaded result
+                                           is identical to the scalar one)
+
+searchApply.profileSequence (objective):
+  <embedded v5 sub>               absolute (source, iccFile "")
+  3-Lab_float-D50_2deg.icc        absolute (interim profile used for search)
+  P-CMYK_Hybrid_Profile.icc       absolute (v5 sub-profile)
+
+searchApply.pccWeights: D93 / A / D50 / F11, weight 1.0 each — as S6a
+
+dst   : Results/MS_smCowsCmyk.tif         (16-bit CMYK, hybrid profile
+                                           embedded with its v5 sub-profile)
+```
+
+Unlike S6a, the source spectral data comes from the image's own embedded v5
+sub-profile: an empty `iccFile` on the first stage is the same
+"use the embedded profile" convention S1 and S5a use.
+
+Where S1 renders through the colorimetric base part, S6b searches for the
+CMYK whose *reflectance* best matches the source under all four observing
+conditions at once. Rendering source and result to sRGB under D50, A and F11
+and comparing shows the difference: the match holds under every illuminant,
+not only the one it was optimised for.
+
+`Data/MS_smCows.tif` is the RIT Munsell MetaCow target — deliberately built
+from metameric pairs, so it is the case a colorimetric-only workflow cannot
+reproduce.
+
+---
+
 ## Sanity check after a run
 
 A quick way to confirm the package ran end-to-end:
@@ -200,6 +251,9 @@ ls ICC/                 # should list 7 .icc files (P-, 1-…4-, two S-)
 ls Results/             # should list 5 .tif files and 3 .txt files
 diff Data/cmykGrays.txt Results/cmykGraysEst.txt    # close, not identical
 ```
+
+S6b is not part of that run; after `SpectralImageReproduction.{bat,sh}`
+`Results/` also holds `MS_smCowsCmyk.tif`.
 
 The plot in `Data/cmykGreysPlot.png` is the reference graphic that
 accompanies the round-trip discussion in the ICS document.

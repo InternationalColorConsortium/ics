@@ -13,9 +13,11 @@ The package contains:
 * A worked example profile (`CMYK_Hybrid_Profile.xml`) and supporting PCS /
   observer / spectral profiles (in `Data/`).
 * JSON configuration files (in `config/`) that drive each of the ICS
-  scenarios (S1 … S6).
+  scenarios (S1 … S6b).
 * Build / test scripts (`BuildAndTest.bat`, `BuildAndTest.sh`) that assemble
-  the profiles and execute every scenario end-to-end.
+  the profiles and execute every scenario end-to-end except S6b, plus
+  `SpectralImageReproduction.{bat,sh}` for S6b, which runs an inverse search
+  per pixel and so costs minutes rather than seconds.
 
 It is intended to be run against the [iccDEV](https://github.com/InternationalColorConsortium/DemoIccMAX)
 command line tool suite.
@@ -66,6 +68,24 @@ BuildAndTest.bat
 Both scripts execute the same sequence of steps and should produce
 identical content in `ICC/` and `Results/`.
 
+### Scenario S6b (optional, slow)
+
+S6b reproduces a full multispectral image by inverse search — one search per
+pixel — so it is driven by its own script rather than by `BuildAndTest`.
+Run `BuildAndTest` first, then:
+
+```bat
+SpectralImageReproduction.bat
+```
+
+```sh
+./SpectralImageReproduction.sh
+```
+
+Expect minutes rather than seconds; the config sets `connect.threads` to 0
+(hardware concurrency), and the threaded result is identical to the
+single-threaded one.
+
 ---
 
 ## 3. Folder layout
@@ -74,14 +94,17 @@ identical content in `ICC/` and `Results/`.
 HybridPrinterWithReflectance/
 ├── BuildAndTest.bat                # Windows driver script
 ├── BuildAndTest.sh                 # POSIX driver script (same workflow)
+├── SpectralImageReproduction.bat   # Windows driver for S6b (slow, run by hand)
+├── SpectralImageReproduction.sh    # POSIX driver for S6b (same workflow)
 ├── CMYK_Hybrid_Profile.xml         # XML source of the hybrid printer profile
 ├── ICS-HybridPrinterWithReflectance.pdf  # ICS document (normative reference)
 ├── README.md                       # This file
 ├── docs/
-│   └── Scenarios.md                # Per-scenario reference (S1 … S6)
+│   └── Scenarios.md                # Per-scenario reference (S1 … S6b)
 ├── Data/                           # Inputs: imagery, observer XMLs, PCS XMLs
 │   ├── C-sRGB_v4_ICC_preference.icc
 │   ├── HappyBunniesRGB.tif         # Source RGB image for scenarios S1–S5a
+│   ├── MS_smCows.tif               # 8-channel multispectral source for S6b
 │   ├── Lab_float-D50_2deg.xml      # PCS @ D50, 2°
 │   ├── Lab_float-D93_2deg-MAT.xml  # PCS @ D93, 2° (chromatic adaptation MAT)
 │   ├── Lab_float-F11_2deg-MAT.xml  # PCS @ F11, 2°
@@ -98,7 +121,8 @@ HybridPrinterWithReflectance/
 │   ├── hpwr-S4b-SpectralPrintProof.json
 │   ├── hpwr-S5a-SpectralExtraction.json
 │   ├── hpwr-S5b-SpectralExtraction.json
-│   ├── hpwr-S6-SpectralReproduction.json
+│   ├── hpwr-S6a-SpectralReproduction.json
+│   ├── hpwr-S6b-SpectralImageReproduction.json
 │   └── hpwr-test_cmyk_to_ref.json   # ad-hoc extra (not part of the scenario set)
 ├── ICC/                            # Built profiles (created by script)
 └── Results/                        # Generated images / colour lists (created by script)
@@ -125,7 +149,8 @@ configuration file. A detailed description is in
 | S4b | `iccApplyProfiles` / `hpwr-S4b-SpectralPrintProof.json` | Spectral proof under D93 using the v5 sub-profile |
 | S5a | `iccApplyProfiles` / `hpwr-S5a-SpectralExtraction.json` | Extract a multispectral RGB image from CMYK via reflectance |
 | S5b | `iccApplyNamedCmm` / `hpwr-S5b-SpectralExtraction.json` | Extract the reflectance spectrum for two CMYK greys |
-| S6 | `iccApplySearch` / `hpwr-S6-SpectralReproduction.json` | Inverse spectral reproduction (find CMYK matching a reflectance) under four illuminants |
+| S6a | `iccApplySearch` / `hpwr-S6a-SpectralReproduction.json` | Inverse spectral reproduction of a colour list (find CMYK matching a reflectance) under four illuminants |
+| S6b | `iccApplyProfiles` / `hpwr-S6b-SpectralImageReproduction.json` | The same inverse search applied to a multispectral **image** (`connect.useSearch`). Not run by `BuildAndTest` — see `SpectralImageReproduction.{bat,sh}` |
 
 S3 is the simplest of the v5 scenarios — it only uses the forward
 transform of the sub-profile, so it needs no iccMAX PCS processing at all.
@@ -141,10 +166,16 @@ range. Run it by hand:
 iccApplyNamedCmm -cfg config/hpwr-test_cmyk_to_ref.json
 ```
 
-The S5b / S6 pair forms a spectral round trip: S5b produces a reflectance
-spectrum from CMYK, and S6 searches for a CMYK that reproduces it under
+The S5b / S6a pair forms a spectral round trip: S5b produces a reflectance
+spectrum from CMYK, and S6a searches for a CMYK that reproduces it under
 D93/A/D50/F11 with equal weight. The output `Results/cmykGraysEst.txt`
 should be close to `Data/cmykGrays.txt`.
+
+S6b scales that same search up from two patches to a 600×420 multispectral
+image. `Data/MS_smCows.tif` is the RIT Munsell MetaCow target, built from
+metameric pairs — precisely the content a colorimetric-only workflow cannot
+reproduce, and the reason the search optimises across all four observing
+conditions at once.
 
 ---
 
@@ -172,7 +203,13 @@ HappyBunniesProofA.tif      # S4a — Illuminant A spectral proof
 HappyBunniesProofD93.tif    # S4b — D93 spectral proof
 HappyBunniesMSRGB.tif       # S5a — Multispectral RGB extraction
 cmykGraysRef.txt            # S5b — Reflectance spectra of the two greys
-cmykGraysEst.txt            # S6  — CMYK estimated from those spectra
+cmykGraysEst.txt            # S6a — CMYK estimated from those spectra
+```
+
+`SpectralImageReproduction.{bat,sh}` adds one more:
+
+```
+MS_smCowsCmyk.tif           # S6b — CMYK image reproduced by spectral search
 ```
 
 The script also echoes the contents of `Data/cmykGrays.txt`,
@@ -188,13 +225,15 @@ Built profile filenames use a single-character prefix to indicate role:
 
 * `P-` — the **P**rofile under test (the hybrid printer profile).
 * `1-`…`4-` — colorimetric PCS profiles used to evaluate under different
-  illuminants. The number is also the PCC index used by `iccApplySearch`
-  in S6.
+  illuminants. The number is also the PCC index used by the inverse
+  search in S6a and S6b.
 * `S-` — **S**pectral profiles (spectral PCS, or multispectral encoding).
 
 Configuration filenames use the pattern `hpwr-S<n>-<purpose>.json`, where
 `hpwr` denotes *Hybrid Printer With Reflectance* and `<n>` is the scenario
-number from the ICS document.
+number from the ICS document. A letter suffix distinguishes drivers within
+one numbered scenario — S4a/S4b differ by observing condition, S5a/S5b and
+S6a/S6b by whether the workflow is a colour list or an image.
 
 ---
 
