@@ -244,6 +244,17 @@ that is close enough to be useful, and where it is not, is what the scenario
 is for — the interesting work is finding those edges, and this configuration
 is only one point to start from.
 
+The destination profile is the first thing to vary. What the search can
+reach is bounded by the *spectral* gamut of the ink set — the range of
+reflectance curves it can actually produce — which is a stronger constraint
+than the colour gamut and a different one. Four process inks span a narrow
+set of curves; a printer with orange, green, violet or other extended inks
+spans a wider one, and should in principle be able to follow a target
+spectrum further before the compromise between observing conditions starts
+to bind. Worth testing rather than assuming, though: extra inks only help if
+the search actually recruits them, and a wider colour gamut does not by
+itself imply more spectral selectivity where a given target needs it.
+
 Some things to know before drawing conclusions from the output:
 
 * **The output is itself a spectral image.** `Results/MS_smCowsPrn.tif` holds
@@ -266,8 +277,12 @@ Some things to know before drawing conclusions from the output:
   rear sections is present in the source under every observing condition —
   it is not introduced by the reproduction.
 
-Both the ink set and the `pccWeights` are worth varying; they are the two
-levers that decide what "close enough" means here.
+The destination profile and the `pccWeights` are the two levers that decide
+what "close enough" means here: the first sets what spectra are reachable,
+the second sets which agreements are being paid for. The example uses one
+hybrid CMYK profile and four equally weighted observing conditions because
+that is the smallest arrangement that shows the mechanism — it is not a
+recommendation.
 
 ## Sanity check after a run
 
