@@ -263,10 +263,10 @@ Some things to know before drawing conclusions from the output:
   reconstructed from the printer model rather than stored. It can be fed to
   S4a/S4b/S5a exactly as `HappyBunniesCmyk.tif` is, or viewed under any
   observing condition by supplying a different `pccFile`.
-* **Satisfying four illuminants at once means being optimal under none.**
-  Weighting a single PCC instead will match that illuminant far more closely
-  and others far less. Neither setting is the right one in general; which
-  compromise suits depends on the job.
+* **Satisfying four observing conditions at once means being optimal under
+  none.** Naming a single PCC in the objective instead will match that
+  condition far more closely and the others far less. Neither arrangement is
+  the right one in general; which compromise suits depends on the job.
 * **Expect a black-heavy separation.** Black is the spectrally flattest ink,
   so its effect on colour is the least illuminant-dependent, and an objective
   spanning several illuminants favours it over CMY.
@@ -277,12 +277,21 @@ Some things to know before drawing conclusions from the output:
   rear sections is present in the source under every observing condition —
   it is not introduced by the reproduction.
 
-The destination profile and the `pccWeights` are the two levers that decide
-what "close enough" means here: the first sets what spectra are reachable,
-the second sets which agreements are being paid for. The example uses one
-hybrid CMYK profile and four equally weighted observing conditions because
-that is the smallest arrangement that shows the mechanism — it is not a
-recommendation.
+Three things decide what "close enough" means here, and they are worth
+varying separately:
+
+* the **destination profile**, which sets which spectra are reachable at all;
+* the **set of observing conditions** in the objective — the `pccFile`
+  entries — which sets where agreement is required;
+* their **relative weights** — the `weight` values — which sets what is
+  given up where the conditions conflict.
+
+The last two live together in the `searchApply.pccWeights` array, one
+`{pccFile, weight}` entry each, but they are different decisions: adding a
+fifth observing condition is not the same experiment as raising the weight
+on one of the four already there. The example uses one hybrid CMYK profile
+and four conditions at equal weight because that is the smallest arrangement
+that shows the mechanism — it is not a recommendation.
 
 ## Sanity check after a run
 

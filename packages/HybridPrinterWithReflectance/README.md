@@ -187,7 +187,7 @@ After a successful run, `ICC/` contains:
 P-CMYK_Hybrid_Profile.icc          # The hybrid printer profile under test
 1-Lab_float-D93_2deg-MAT.icc       # PCS profiles used for absolute colorimetric
 2-Lab_float-IllumA_2deg-MAT.icc    # rendering under several illuminants and as
-3-Lab_float-D50_2deg.icc           # PCC weights for the inverse search in Scenario 6
+3-Lab_float-D50_2deg.icc           # the weighted PCCs of the Scenario 6 search
 4-Lab_float-F11_2deg-MAT.icc
 S-Spec380_10_730-D50_2deg.icc      # Spectral PCS (380–730 nm, 10 nm step)
 S-MultiSpectralRGB.icc             # Multispectral RGB encoding profile
