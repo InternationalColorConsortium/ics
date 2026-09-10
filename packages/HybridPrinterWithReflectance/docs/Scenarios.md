@@ -237,23 +237,30 @@ carried here in an abridged 8-channel reflectance encoding.
 
 ### Using S6b
 
-What S6b provides is a working tool for *limited* spectral reproduction:
-a real ink set has only so much spectral selectivity, so a search of this
-kind gets closer spectrally rather than arriving at a spectral match. Where
-that is close enough to be useful, and where it is not, is what the scenario
-is for — the interesting work is finding those edges, and this configuration
-is only one point to start from.
+What S6b provides is a working tool for *limited* spectral reproduction.
+Any real device can produce only a restricted set of spectra, so a search of
+this kind gets closer spectrally rather than arriving at a spectral match.
+Where that is close enough to be useful, and where it is not, is what the
+scenario is for — the interesting work is finding those edges, and this
+configuration is only one point to start from.
 
 The destination profile is the first thing to vary. What the search can
-reach is bounded by the *spectral* gamut of the ink set — the range of
-reflectance curves it can actually produce — which is a stronger constraint
-than the colour gamut and a different one. Four process inks span a narrow
-set of curves; a printer with orange, green, violet or other extended inks
-spans a wider one, and should in principle be able to follow a target
-spectrum further before the compromise between observing conditions starts
-to bind. Worth testing rather than assuming, though: extra inks only help if
-the search actually recruits them, and a wider colour gamut does not by
-itself imply more spectral selectivity where a given target needs it.
+reach is bounded by that profile's **spectral gamut** — the set of spectra
+the device it describes can actually produce — which is a different and
+stronger constraint than its colour gamut. Two devices can share a colour
+gamut and reach quite different sets of spectra within it, and it is the
+spectral gamut that decides how closely a target spectrum can be followed
+before the compromise between observing conditions starts to bind.
+
+For a printer the spectral gamut is largely dictated by the colorant set:
+four process inks span a narrow range of reflectance curves, and adding
+orange, green, violet or other colorants widens it. But the property belongs
+to the profile, not to inks as such — a display, a projector or any other
+output the destination profile might describe has a spectral gamut of its
+own, set by whatever its primaries are. Worth testing rather than assuming
+in any case: more colorants only help if the search recruits them, and a
+wider colour gamut does not by itself imply more spectral reach where a
+particular target needs it.
 
 Some things to know before drawing conclusions from the output:
 
@@ -267,12 +274,16 @@ Some things to know before drawing conclusions from the output:
   none.** Naming a single PCC in the objective instead will match that
   condition far more closely and the others far less. Neither arrangement is
   the right one in general; which compromise suits depends on the job.
-* **Expect a black-heavy separation.** Black is the spectrally flattest ink,
-  so its effect on colour is the least illuminant-dependent, and an objective
-  spanning several illuminants favours it over CMY.
+* **Expect the flattest colorant to be favoured.** A colorant whose spectrum
+  is close to flat affects colour in much the same way whatever the
+  illuminant, so an objective spanning several observing conditions leans on
+  it. With this CMYK destination that colorant is black, and the separation
+  comes out markedly blacker than a colorimetric one; with a different
+  destination the same reasoning picks out whichever of its channels is
+  spectrally flattest.
 * **The source is not a physical reflectance target.** The abridged
   8-channel encoding is lossy and reconstructs some values outside 0…1, so
-  part of what the search is asked to match is not a reflectance any printer
+  part of what the search is asked to match is not a reflectance any device
   could produce. Relatedly, the step in colour between each cow's front and
   rear sections is present in the source under every observing condition —
   it is not introduced by the reproduction.
