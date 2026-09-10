@@ -23,8 +23,6 @@ iccFromXml Data\Lab_float-D50_2deg.xml ICC\3-Lab_float-D50_2deg.icc
 @if %errorlevel% neq 0 goto :failed
 iccFromXml Data\Lab_float-F11_2deg-MAT.xml ICC\4-Lab_float-F11_2deg-MAT.icc
 @if %errorlevel% neq 0 goto :failed
-iccFromXml Data\Lab_float-D65_2deg-MAT.xml ICC\5-Lab_float-D65_2deg-MAT.icc
-@if %errorlevel% neq 0 goto :failed
 iccFromXml Data\Spec380_10_730-D50_2deg.xml ICC\S-Spec380_10_730-D50_2deg.icc
 @if %errorlevel% neq 0 goto :failed
 iccFromXml Data\MultiSpectralRGB.xml ICC\S-MultiSpectralRGB.icc

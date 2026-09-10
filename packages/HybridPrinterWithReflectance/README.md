@@ -71,9 +71,7 @@ identical content in `ICC/` and `Results/`.
 ### Scenario S6b (optional, slow)
 
 S6b reproduces a full multispectral image by inverse search — one search per
-pixel — so it is driven by its own script rather than by `BuildAndTest`. The
-script then proofs its own result to sRGB under D65, D93 and Illuminant A, as
-visual evidence that the reproduction holds across observing conditions.
+pixel — so it is driven by its own script rather than by `BuildAndTest`.
 Run `BuildAndTest` first, then:
 
 ```bat
@@ -108,7 +106,6 @@ HybridPrinterWithReflectance/
 │   ├── HappyBunniesRGB.tif         # Source RGB image for scenarios S1–S5a
 │   ├── MS_smCows.tif               # 8-channel multispectral source for S6b
 │   ├── Lab_float-D50_2deg.xml      # PCS @ D50, 2°
-│   ├── Lab_float-D65_2deg-MAT.xml  # PCS @ D65, 2° (MAT) — S6b evidence only
 │   ├── Lab_float-D93_2deg-MAT.xml  # PCS @ D93, 2° (chromatic adaptation MAT)
 │   ├── Lab_float-F11_2deg-MAT.xml  # PCS @ F11, 2°
 │   ├── Lab_float-IllumA_2deg-MAT.xml # PCS @ Illuminant A, 2°
@@ -126,9 +123,6 @@ HybridPrinterWithReflectance/
 │   ├── hpwr-S5b-SpectralExtraction.json
 │   ├── hpwr-S6a-SpectralReproduction.json
 │   ├── hpwr-S6b-SpectralImageReproduction.json
-│   ├── hpwr-S6b-ProofD65.json       # S6b evidence: proof the result under D65
-│   ├── hpwr-S6b-ProofD93.json       #   " under D93
-│   ├── hpwr-S6b-ProofA.json         #   " under Illuminant A
 │   └── hpwr-test_cmyk_to_ref.json   # ad-hoc extra (not part of the scenario set)
 ├── ICC/                            # Built profiles (created by script)
 └── Results/                        # Generated images / colour lists (created by script)
@@ -195,7 +189,6 @@ P-CMYK_Hybrid_Profile.icc          # The hybrid printer profile under test
 2-Lab_float-IllumA_2deg-MAT.icc    # rendering under several illuminants and as
 3-Lab_float-D50_2deg.icc           # PCC weights for the inverse search in Scenario 6
 4-Lab_float-F11_2deg-MAT.icc
-5-Lab_float-D65_2deg-MAT.icc       # D65 2°, used only to view the S6b result
 S-Spec380_10_730-D50_2deg.icc      # Spectral PCS (380–730 nm, 10 nm step)
 S-MultiSpectralRGB.icc             # Multispectral RGB encoding profile
 ```
@@ -216,18 +209,8 @@ cmykGraysEst.txt            # S6a — CMYK estimated from those spectra
 `SpectralImageReproduction.{bat,sh}` adds one more:
 
 ```
-MS_smCowsPrn.tif            # S6b — CMYK image reproduced by spectral search
-MS_smCowsPrnProofD65.tif    # S6b — that result viewed under D65
-MS_smCowsPrnProofD93.tif    # S6b — ... under D93
-MS_smCowsPrnProofA.tif      # S6b — ... under Illuminant A
+MS_smCowsPrn.tif           # S6b — CMYK image reproduced by spectral search
 ```
-
-The three proofs are the visual evidence for S6b. `MS_smCowsPrn.tif` carries
-four CMYK channels but embeds the hybrid printer profile, so it is itself a
-spectral image: the same file can be rendered under any observing condition,
-and only the `pccFile` differs between the three configs. D65 is not one of
-the four PCCs the search optimised over, so it shows the match generalising
-rather than the objective being satisfied.
 
 The script also echoes the contents of `Data/cmykGrays.txt`,
 `Results/cmykGraysRefPcs.txt`, `Results/cmykGraysRef.txt` and
@@ -241,10 +224,9 @@ round trip can be eyeballed directly.
 Built profile filenames use a single-character prefix to indicate role:
 
 * `P-` — the **P**rofile under test (the hybrid printer profile).
-* `1-`…`5-` — colorimetric PCS profiles used to evaluate under different
-  illuminants. `1-`…`4-` are the four PCCs the inverse search in S6a and S6b
-  optimises over, numbered in the order they are weighted; `5-` (D65) is not
-  a search PCC and is used only to view the S6b result.
+* `1-`…`4-` — colorimetric PCS profiles used to evaluate under different
+  illuminants. The number is also the PCC index used by the inverse
+  search in S6a and S6b.
 * `S-` — **S**pectral profiles (spectral PCS, or multispectral encoding).
 
 Configuration filenames use the pattern `hpwr-S<n>-<purpose>.json`, where

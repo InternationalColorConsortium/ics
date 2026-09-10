@@ -19,7 +19,6 @@ All paths below are written relative to the package root.
 | PCS @ A | `ICC/2-Lab_float-IllumA_2deg-MAT.icc` | `Data/Lab_float-IllumA_2deg-MAT.xml` | Colorimetric PCS for Illuminant A 2°. |
 | PCS @ D50 | `ICC/3-Lab_float-D50_2deg.icc` | `Data/Lab_float-D50_2deg.xml` | Colorimetric PCS for D50 2° (the ICC reference). |
 | PCS @ F11 | `ICC/4-Lab_float-F11_2deg-MAT.icc` | `Data/Lab_float-F11_2deg-MAT.xml` | Colorimetric PCS for F11 2°. |
-| PCS @ D65 | `ICC/5-Lab_float-D65_2deg-MAT.icc` | `Data/Lab_float-D65_2deg-MAT.xml` | Colorimetric PCS for D65 2° (MAT). Not a search PCC — used only to view the S6b result under a condition the search did not optimise over. |
 | Spectral PCS | `ICC/S-Spec380_10_730-D50_2deg.icc` | `Data/Spec380_10_730-D50_2deg.xml` | Spectral PCS, 380…730 nm at 10 nm. |
 | Multispectral RGB | `ICC/S-MultiSpectralRGB.icc` | `Data/MultiSpectralRGB.xml` | Multispectral RGB encoding profile (3 wide bands). |
 | sRGB v4 | `Data/C-sRGB_v4_ICC_preference.icc` | (prebuilt) | The ICC sRGB v4 preference profile (used as a display proof target). |
@@ -233,163 +232,42 @@ sub-profile: an empty `iccFile` on the first stage is the same
 
 Where S1 renders through the colorimetric base part, S6b searches for the
 CMYK whose *reflectance* best matches the source under all four observing
-conditions at once. Rendering source and result to sRGB under D50, A and F11
-and comparing shows the difference: the match holds under every illuminant,
-not only the one it was optimised for.
+conditions at once. `Data/MS_smCows.tif` is the RIT Munsell MetaCow image,
+carried here in an abridged 8-channel reflectance encoding.
 
-`Data/MS_smCows.tif` is the RIT Munsell MetaCow target — deliberately built
-from metameric pairs, so it is the case a colorimetric-only workflow cannot
-reproduce.
+### Using S6b
 
-### Why the objective generalises
+What S6b provides is a working tool for *limited* spectral reproduction:
+a real ink set has only so much spectral selectivity, so a search of this
+kind gets closer spectrally rather than arriving at a spectral match. Where
+that is close enough to be useful, and where it is not, is what the scenario
+is for — the interesting work is finding those edges, and this configuration
+is only one point to start from.
 
-S6b uses the same four PCC weights as S6a, and the MetaCow target is built
-around D65 — an illuminant that is not among them. It nonetheless reproduces
-under D65 to a mean of 1.2/255 in sRGB, between the D50 result (0.4) and the
-D93 result (2.0) that bracket it on the daylight locus, and well ahead of
-Illuminant A (4.8) and F11 (2.5). Substituting a D65 PCC for the D50 one
-moves the overall mean across those five illuminants by 0.006/255 — it
-improves D65 and D93 and pays it back at D50 and A.
+Some things to know before drawing conclusions from the output:
 
-The reason is what the cost function is measuring. Summing Lab distance to
-the target over several dissimilar observing conditions is an **index of
-metamerism**: a candidate that matched the target under one illuminant but
-drifted under another would score badly, so the search actively *penalises*
-metamerism rather than trading on it. Driving that index down drives the two
-reflectances together — the more, and the more dissimilar, the observing
-conditions, the closer to spectral identity the minimum lies. Getting
-spectrally closer is the goal; colorimetry under several illuminants is how
-it is expressed with the machinery a CMM already has. D65 then needs no
-special treatment: it falls inside the region that D93, A, D50 and F11
-jointly constrain.
+* **The output is itself a spectral image.** `Results/MS_smCowsPrn.tif` holds
+  four CMYK channels, but it embeds the hybrid printer profile, so those
+  channels decode through the v5 sub-profile back to 380…730 nm reflectance —
+  reconstructed from the printer model rather than stored. It can be fed to
+  S4a/S4b/S5a exactly as `HappyBunniesCmyk.tif` is, or viewed under any
+  observing condition by supplying a different `pccFile`.
+* **Satisfying four illuminants at once means being optimal under none.**
+  Weighting a single PCC instead will match that illuminant far more closely
+  and others far less. Neither setting is the right one in general; which
+  compromise suits depends on the job.
+* **Expect a black-heavy separation.** Black is the spectrally flattest ink,
+  so its effect on colour is the least illuminant-dependent, and an objective
+  spanning several illuminants favours it over CMY.
+* **The source is not a physical reflectance target.** The abridged
+  8-channel encoding is lossy and reconstructs some values outside 0…1, so
+  part of what the search is asked to match is not a reflectance any printer
+  could produce. Relatedly, the step in colour between each cow's front and
+  rear sections is present in the source under every observing condition —
+  it is not introduced by the reproduction.
 
-Clause 5.2.3.7 of the ICS states this directly — the minimised cost
-relationship "may for example utilize an index of metamerism computation".
-
-The residual under D65 spreads over whole cow bodies and peaks on saturated
-cyans, rather than concentrating anywhere in particular.
-
-Each cow does show a visible step in colour between its front and rear
-sections, and that step is present under every observing condition tested —
-in the *source* as much as in the reproduction (mean sRGB step across the
-boundary, source vs reproduction: D50 13.9/13.3, D65 13.3/12.9, D93
-13.0/12.4, A 15.8/14.1, F11 15.4/13.9). It is content of the source image,
-not something the reproduction introduces; if anything the reproduction
-slightly understates it. Note that the two sections therefore do not match
-each other under any of these five conditions, so whatever metameric
-relationship the original MetaCow spectra hold, it does not survive as a
-colorimetric match after the abridged 8-channel encoding this source uses.
-
-### What the output image is, and how closely it matches spectrally
-
-`Results/MS_smCowsPrn.tif` is itself a spectral image. It holds four CMYK
-channels, but it embeds the hybrid printer profile, so those channels decode
-through the v5 sub-profile to 36-band reflectance. The reflectance is
-reconstructed from the printer model rather than stored — the device
-channels *are* the compression. That is why the same absolute + v5
-sub-profile intent (`10003`) used on the multispectral source works on the
-CMYK output too, and why the output can drive S4a/S4b/S5a exactly as
-`HappyBunniesCmyk.tif` does.
-
-Because both source and output are spectral images, they can be compared as
-reflectance rather than as colour. Extracting each through its own embedded
-v5 sub-profile into `S-Spec380_10_730-D50_2deg.icc` and differencing gives a
-per-pixel RMS reflectance error of 3.1 % mean, 1.2 % median, 16.8 % at p95.
-That residual is the measure of how far four inks fall short of spanning an
-arbitrary 36-band reflectance: minimising the index of metamerism moves the
-spectra together, but the printer's spectral selectivity sets a floor below
-which they cannot go. Where that floor bites shows in two places:
-
-* Error tracks reflectance level: 0.008 RMS where mean reflectance is below
-  0.05, rising to 0.143 above 0.60. The bright saturated cows are where four
-  inks run out of both gamut and selectivity.
-* Error is worst at 380–400 nm and 710–730 nm (up to 0.051) and best at
-  450–540 nm (0.006). An index of metamerism can only see the spectrum
-  through observer functions, and those fall to zero at the ends of the
-  range — so the extremes carry almost no weight in the cost and are left
-  comparatively free. Widening the set of observing conditions tightens the
-  weighted region; it cannot constrain what no observer function sees.
-
-### What the four-way compromise costs, and what it does to the separation
-
-Re-running S6b four times with a single PCC weighted each time shows what the
-combined objective is trading away. Mean sRGB error over the printable range,
-rows = what the search optimised, columns = viewing condition:
-
-| optimised on | D93 | A | D50 | F11 | mean |
-|---|---|---|---|---|---|
-| only D93 | **0.20** | 4.10 | 2.00 | 4.11 | 2.60 |
-| only A | 4.67 | **0.59** | 3.19 | 2.57 | 2.76 |
-| only D50 | 1.95 | 2.58 | **0.30** | 3.22 | 2.01 |
-| only F11 | 4.16 | 2.55 | 3.39 | **0.55** | 2.66 |
-| all four | 1.03 | 1.54 | 0.45 | 1.80 | **1.20** |
-
-A single illuminant is almost exactly satisfiable — 0.2 to 0.6. Four at once
-are not: the combined solution gives up a little everywhere (0.45 … 1.80) to
-avoid the 2.5 … 4.7 that every single-illuminant solution pays under the
-conditions it ignored. That gap is the spectral selectivity of four inks
-running out, and it is why the residual cannot be driven to zero.
-
-In *ink* terms, though, the combined solution is not a blend of the four.
-The single-illuminant solutions all sit close to the plain colorimetric
-separation — 4–6 % ink away from it, clustered around C 67 M 50–61 Y 50–54
-K 58. The four-PCC solution is 29 % away, at C 36 M 30 Y 27 K 77: it trades
-CMY for black wholesale.
-
-That is the objective doing something physically sensible. Black is the
-spectrally flat ink — adding it scales reflectance at every wavelength
-almost equally, so what it does to colour barely depends on the illuminant.
-C, M and Y have strong spectral structure, so their contribution shifts as
-the illuminant changes. Satisfying four illuminants at once therefore pushes
-the separation toward the illuminant-robust colorant, which is maximum GCR.
-A spectral reproduction workflow will tend to produce black-heavy
-separations for this reason, not as a side effect of ink limits.
-
-Note also that the source is not entirely a physical target: the abridged
-8-channel encoder reconstructs reflectances spanning −0.601 … 1.368, while
-the printer model can only produce 0.005 … 1.011. Some of what the search is
-asked to match is not a reflectance at all.
-
-### S6b evidence — the result viewed under three observing conditions
-
-**Drivers:** `iccApplyProfiles -cfg config/hpwr-S6b-Proof{D65,D93,A}.json`,
-run by `SpectralImageReproduction.{bat,sh}` after the search.
-
-These are not separate ICS scenarios; they are the visual evidence for S6b,
-and they exist only because `Results/MS_smCowsPrn.tif` embeds the hybrid
-printer profile. That is what makes a four-channel CMYK file a spectral
-image — the channels decode through the v5 sub-profile to 380…730 nm
-reflectance, so one file can be rendered under any observing condition. A
-colorimetric-only CMYK file could not do this; it would carry a single
-rendering fixed at its own illuminant.
-
-Each config is the S4a pipeline pointed at the S6b output, and the three
-differ *only* in `pccFile`:
-
-```
-src   : Results/MS_smCowsPrn.tif          (embedded hybrid profile)
-stage1: <embedded v5 sub>     absolute    pcc = 5-Lab_float-D65_2deg-MAT.icc
-                                              or 1-Lab_float-D93_2deg-MAT.icc
-                                              or 2-Lab_float-IllumA_2deg-MAT.icc
-stage2: C-sRGB_v4_ICC_preference.icc  perceptual
-dst   : Results/MS_smCowsPrnProof{D65,D93,A}.tif   (8-bit)
-```
-
-D93 and Illuminant A are two of the four PCCs the search optimised over, and
-bracket the set. D65 deliberately is not one of them, so it is evidence that
-the match *generalises* rather than evidence that the objective was
-satisfied. Rendering the source image through the identical pipeline and
-differencing gives, over the printer's reachable range, a mean sRGB error of
-0.7/255 under D65, 1.0 under D93 and 1.5 under Illuminant A — the
-unoptimised condition is no worse than the optimised ones.
-
-Expect each proof to carry a colour cast, and expect it to run *opposite* to
-the illuminant: blue under Illuminant A, yellow under D93. The `-MAT` PCC
-profiles adapt for the colour temperature of their illuminant, so what
-remains after adaptation runs the other way. This is the same behaviour
-S4a/S4b show.
-
----
+Both the ink set and the `pccWeights` are worth varying; they are the two
+levers that decide what "close enough" means here.
 
 ## Sanity check after a run
 
