@@ -250,12 +250,51 @@ Illuminant A (4.8) and F11 (2.5). Substituting a D65 PCC for the D50 one
 moves the overall mean across those five illuminants by 0.006/255 — it
 improves D65 and D93 and pays it back at D50 and A.
 
-That is the spectral path doing its job: the search minimises reflectance
-error, not colorimetric error under any one illuminant, so it generalises to
-observing conditions it never evaluated. The residual under D65 spreads over
-whole cow bodies and peaks on saturated cyans — it is a gamut limit, not a
-collapse of metamerism, so the two halves of a metameric pair do not separate
-into a visible seam.
+The reason is worth stating precisely, because it is easy to state wrongly.
+The search does **not** minimise reflectance error. Its cost is the Lab
+distance to the target, summed over the weighted PCCs — so what it finds is
+a CMYK *metamer* of the target under those four observing conditions.
+Constraining colour under four illuminants that differ as much as D93, A,
+D50 and F11 do indirectly constrains the spectrum across the region the
+observer functions actually weight, and D65 sits inside that region. It
+generalises because the constraint is broad, not because reflectance is
+being matched.
+
+The residual under D65 spreads over whole cow bodies and peaks on saturated
+cyans — it is a gamut limit, not a collapse of metamerism, so the two halves
+of a metameric pair do not separate into a visible seam.
+
+### What the output image is, and how closely it matches spectrally
+
+`Results/MS_smCowsPrn.tif` is itself a spectral image. It holds four CMYK
+channels, but it embeds the hybrid printer profile, so those channels decode
+through the v5 sub-profile to 36-band reflectance. The reflectance is
+reconstructed from the printer model rather than stored — the device
+channels *are* the compression. That is why the same absolute + v5
+sub-profile intent (`10003`) used on the multispectral source works on the
+CMYK output too, and why the output can drive S4a/S4b/S5a exactly as
+`HappyBunniesCmyk.tif` does.
+
+Because both source and output are spectral images, they can be compared as
+reflectance rather than as colour. Extracting each through its own embedded
+v5 sub-profile into `S-Spec380_10_730-D50_2deg.icc` and differencing gives a
+per-pixel RMS reflectance error of 3.1 % mean, 1.2 % median, 16.8 % at p95 —
+far looser than the colorimetric agreement, and that gap is the metamerism
+the objective is free to exploit. Two details confirm which objective is at
+work:
+
+* Error tracks reflectance level: 0.008 RMS where mean reflectance is below
+  0.05, rising to 0.143 above 0.60. The bright saturated cows are where the
+  four inks run out of gamut.
+* Error is worst at 380–400 nm and 710–730 nm (up to 0.051) and best at
+  450–540 nm (0.006). The end bands are where the observer functions fall to
+  zero, so they contribute almost nothing to the cost and the search leaves
+  them unconstrained.
+
+Note also that the source is not entirely a physical target: the abridged
+8-channel encoder reconstructs reflectances spanning −0.601 … 1.368, while
+the printer model can only produce 0.005 … 1.011. Some of what the search is
+asked to match is not a reflectance at all.
 
 ---
 
