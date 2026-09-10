@@ -45,25 +45,53 @@ adds its own row to the table below, so this list grows as packages land.
 <!--
 When adding a package, insert a row above in alphabetical order:
 
-| [PackageName](PackageName/) | One-line summary of the conformance area. |
+| [PackageName](packages/PackageName/) | One-line summary of the conformance area. |
 
 The package directory holds its normative ICS document (`ICS-PackageName.pdf`),
 the profile XML sources, `config/` scenario drivers, `Data/` inputs, and the
 `BuildAndTest` scripts.
 -->
 
-Each package is self-contained. Change to the package directory and run the
-build-and-test script for your platform:
+### Build and test everything
+
+`packages/` contains a driver that builds and tests every package in turn:
 
 ```sh
 # macOS / Linux / Git Bash
-cd <PackageName>
+cd packages
 ./BuildAndTest.sh
 ```
 
 ```bat
 @REM Windows
-cd <PackageName>
+cd packages
+BuildAndTest.bat
+```
+
+It checks that the `iccDEV` tools listed above are on your `PATH` before building
+anything, and stops with a warning if any are missing. This matters: without the
+tools, each package script creates empty `ICC/` and `Results/` directories and
+reports no error, which is easily mistaken for success.
+
+It then runs every package it finds, prints a per-package pass/fail summary, and
+exits non-zero if any package failed. Packages are discovered by looking for a
+`BuildAndTest` script in each subdirectory, so a new package is picked up
+automatically.
+
+### Build and test one package
+
+Each package is also self-contained. Change to the package directory and run the
+build-and-test script for your platform:
+
+```sh
+# macOS / Linux / Git Bash
+cd packages/<PackageName>
+./BuildAndTest.sh
+```
+
+```bat
+@REM Windows
+cd packages\<PackageName>
 BuildAndTest.bat
 ```
 

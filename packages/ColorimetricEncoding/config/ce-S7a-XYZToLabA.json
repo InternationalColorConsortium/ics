@@ -1,0 +1,20 @@
+{
+ "dataFiles": {
+  "dstEncoding": "value",
+  "dstType": "legacy",
+  "srcFile": "Results/chartRef-S6c-XYZD93.txt",
+  "srcType": "legacy"
+ },
+ "profileSequence": [
+  {
+   "iccFile": "ICC/E-XYZ_int-D93_2deg-MAT.icc",
+   "intent": "relative",
+   "transform": "default"
+  },
+  {
+   "iccFile": "ICC/E-Lab_int-IllumA_2deg-MAT.icc",
+   "intent": "relative",
+   "transform": "default"
+  }
+ ]
+}
