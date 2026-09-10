@@ -46,6 +46,6 @@ echo "*************************************************************************"
 # every worker its own apply object with private sub-chain state, so the
 # threaded result is identical to the single-threaded one -- only faster.
 iccApplyProfiles -cfg config/hpwr-S6b-SpectralImageReproduction.json
-iccTiffDump      Results/MS_smCowsCmyk.tif   || true   # inspection only: non-zero means profile warnings, not failure
+iccTiffDump      Results/MS_smCowsPrn.tif   || true   # inspection only: non-zero means profile warnings, not failure
 
-echo "Wrote Results/MS_smCowsCmyk.tif"
+echo "Wrote Results/MS_smCowsPrn.tif"

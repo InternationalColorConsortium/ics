@@ -36,9 +36,9 @@
 @REM the threaded result is identical to the single-threaded one -- only faster.
 iccApplyProfiles -cfg config\hpwr-S6b-SpectralImageReproduction.json
 @if %errorlevel% neq 0 goto :failed
-iccTiffDump Results\MS_smCowsCmyk.tif
+iccTiffDump Results\MS_smCowsPrn.tif
 
-@ECHO Wrote Results\MS_smCowsCmyk.tif
+@ECHO Wrote Results\MS_smCowsPrn.tif
 @goto :done
 
 :missing

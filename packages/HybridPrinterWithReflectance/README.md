@@ -209,7 +209,7 @@ cmykGraysEst.txt            # S6a — CMYK estimated from those spectra
 `SpectralImageReproduction.{bat,sh}` adds one more:
 
 ```
-MS_smCowsCmyk.tif           # S6b — CMYK image reproduced by spectral search
+MS_smCowsPrn.tif           # S6b — CMYK image reproduced by spectral search
 ```
 
 The script also echoes the contents of `Data/cmykGrays.txt`,

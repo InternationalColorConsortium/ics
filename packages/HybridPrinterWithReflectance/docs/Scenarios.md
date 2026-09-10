@@ -222,7 +222,7 @@ searchApply.profileSequence (objective):
 
 searchApply.pccWeights: D93 / A / D50 / F11, weight 1.0 each — as S6a
 
-dst   : Results/MS_smCowsCmyk.tif         (16-bit CMYK, hybrid profile
+dst   : Results/MS_smCowsPrn.tif         (16-bit CMYK, hybrid profile
                                            embedded with its v5 sub-profile)
 ```
 
@@ -240,6 +240,23 @@ not only the one it was optimised for.
 from metameric pairs, so it is the case a colorimetric-only workflow cannot
 reproduce.
 
+### Why the objective generalises
+
+S6b uses the same four PCC weights as S6a, and the MetaCow target is built
+around D65 — an illuminant that is not among them. It nonetheless reproduces
+under D65 to a mean of 1.2/255 in sRGB, between the D50 result (0.4) and the
+D93 result (2.0) that bracket it on the daylight locus, and well ahead of
+Illuminant A (4.8) and F11 (2.5). Substituting a D65 PCC for the D50 one
+moves the overall mean across those five illuminants by 0.006/255 — it
+improves D65 and D93 and pays it back at D50 and A.
+
+That is the spectral path doing its job: the search minimises reflectance
+error, not colorimetric error under any one illuminant, so it generalises to
+observing conditions it never evaluated. The residual under D65 spreads over
+whole cow bodies and peaks on saturated cyans — it is a gamut limit, not a
+collapse of metamerism, so the two halves of a metameric pair do not separate
+into a visible seam.
+
 ---
 
 ## Sanity check after a run
@@ -253,7 +270,7 @@ diff Data/cmykGrays.txt Results/cmykGraysEst.txt    # close, not identical
 ```
 
 S6b is not part of that run; after `SpectralImageReproduction.{bat,sh}`
-`Results/` also holds `MS_smCowsCmyk.tif`.
+`Results/` also holds `MS_smCowsPrn.tif`.
 
 The plot in `Data/cmykGreysPlot.png` is the reference graphic that
 accompanies the round-trip discussion in the ICS document.
