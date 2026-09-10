@@ -267,8 +267,18 @@ Clause 5.2.3.7 of the ICS states this directly — the minimised cost
 relationship "may for example utilize an index of metamerism computation".
 
 The residual under D65 spreads over whole cow bodies and peaks on saturated
-cyans — it is a gamut limit, not a collapse of metamerism, so the two halves
-of a metameric pair do not separate into a visible seam.
+cyans, rather than concentrating anywhere in particular.
+
+Each cow does show a visible step in colour between its front and rear
+sections, and that step is present under every observing condition tested —
+in the *source* as much as in the reproduction (mean sRGB step across the
+boundary, source vs reproduction: D50 13.9/13.3, D65 13.3/12.9, D93
+13.0/12.4, A 15.8/14.1, F11 15.4/13.9). It is content of the source image,
+not something the reproduction introduces; if anything the reproduction
+slightly understates it. Note that the two sections therefore do not match
+each other under any of these five conditions, so whatever metameric
+relationship the original MetaCow spectra hold, it does not survive as a
+colorimetric match after the abridged 8-channel encoding this source uses.
 
 ### What the output image is, and how closely it matches spectrally
 
@@ -299,6 +309,41 @@ which they cannot go. Where that floor bites shows in two places:
   range — so the extremes carry almost no weight in the cost and are left
   comparatively free. Widening the set of observing conditions tightens the
   weighted region; it cannot constrain what no observer function sees.
+
+### What the four-way compromise costs, and what it does to the separation
+
+Re-running S6b four times with a single PCC weighted each time shows what the
+combined objective is trading away. Mean sRGB error over the printable range,
+rows = what the search optimised, columns = viewing condition:
+
+| optimised on | D93 | A | D50 | F11 | mean |
+|---|---|---|---|---|---|
+| only D93 | **0.20** | 4.10 | 2.00 | 4.11 | 2.60 |
+| only A | 4.67 | **0.59** | 3.19 | 2.57 | 2.76 |
+| only D50 | 1.95 | 2.58 | **0.30** | 3.22 | 2.01 |
+| only F11 | 4.16 | 2.55 | 3.39 | **0.55** | 2.66 |
+| all four | 1.03 | 1.54 | 0.45 | 1.80 | **1.20** |
+
+A single illuminant is almost exactly satisfiable — 0.2 to 0.6. Four at once
+are not: the combined solution gives up a little everywhere (0.45 … 1.80) to
+avoid the 2.5 … 4.7 that every single-illuminant solution pays under the
+conditions it ignored. That gap is the spectral selectivity of four inks
+running out, and it is why the residual cannot be driven to zero.
+
+In *ink* terms, though, the combined solution is not a blend of the four.
+The single-illuminant solutions all sit close to the plain colorimetric
+separation — 4–6 % ink away from it, clustered around C 67 M 50–61 Y 50–54
+K 58. The four-PCC solution is 29 % away, at C 36 M 30 Y 27 K 77: it trades
+CMY for black wholesale.
+
+That is the objective doing something physically sensible. Black is the
+spectrally flat ink — adding it scales reflectance at every wavelength
+almost equally, so what it does to colour barely depends on the illuminant.
+C, M and Y have strong spectral structure, so their contribution shifts as
+the illuminant changes. Satisfying four illuminants at once therefore pushes
+the separation toward the illuminant-robust colorant, which is maximum GCR.
+A spectral reproduction workflow will tend to produce black-heavy
+separations for this reason, not as a side effect of ink limits.
 
 Note also that the source is not entirely a physical target: the abridged
 8-channel encoder reconstructs reflectances spanning −0.601 … 1.368, while
