@@ -27,6 +27,8 @@
 
 iccFromXml Illuminants\Lab_float-D50_2deg.xml         ICC\E-Lab_float-D50_2deg.icc
 @if %errorlevel% neq 0 goto :failed
+iccFromXml Illuminants\Lab_float-D65_2deg-MAT.xml     ICC\E-Lab_float-D65_2deg-MAT.icc
+@if %errorlevel% neq 0 goto :failed
 iccFromXml Illuminants\Lab_float-D93_2deg-MAT.xml     ICC\E-Lab_float-D93_2deg-MAT.icc
 @if %errorlevel% neq 0 goto :failed
 iccFromXml Illuminants\Lab_int-D50_2deg.xml           ICC\E-Lab_int-D50_2deg.icc
