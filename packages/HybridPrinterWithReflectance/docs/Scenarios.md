@@ -250,15 +250,20 @@ Illuminant A (4.8) and F11 (2.5). Substituting a D65 PCC for the D50 one
 moves the overall mean across those five illuminants by 0.006/255 — it
 improves D65 and D93 and pays it back at D50 and A.
 
-The reason is worth stating precisely, because it is easy to state wrongly.
-The search does **not** minimise reflectance error. Its cost is the Lab
-distance to the target, summed over the weighted PCCs — so what it finds is
-a CMYK *metamer* of the target under those four observing conditions.
-Constraining colour under four illuminants that differ as much as D93, A,
-D50 and F11 do indirectly constrains the spectrum across the region the
-observer functions actually weight, and D65 sits inside that region. It
-generalises because the constraint is broad, not because reflectance is
-being matched.
+The reason is what the cost function is measuring. Summing Lab distance to
+the target over several dissimilar observing conditions is an **index of
+metamerism**: a candidate that matched the target under one illuminant but
+drifted under another would score badly, so the search actively *penalises*
+metamerism rather than trading on it. Driving that index down drives the two
+reflectances together — the more, and the more dissimilar, the observing
+conditions, the closer to spectral identity the minimum lies. Getting
+spectrally closer is the goal; colorimetry under several illuminants is how
+it is expressed with the machinery a CMM already has. D65 then needs no
+special treatment: it falls inside the region that D93, A, D50 and F11
+jointly constrain.
+
+Clause 5.2.3.7 of the ICS states this directly — the minimised cost
+relationship "may for example utilize an index of metamerism computation".
 
 The residual under D65 spreads over whole cow bodies and peaks on saturated
 cyans — it is a gamut limit, not a collapse of metamerism, so the two halves
@@ -278,18 +283,21 @@ CMYK output too, and why the output can drive S4a/S4b/S5a exactly as
 Because both source and output are spectral images, they can be compared as
 reflectance rather than as colour. Extracting each through its own embedded
 v5 sub-profile into `S-Spec380_10_730-D50_2deg.icc` and differencing gives a
-per-pixel RMS reflectance error of 3.1 % mean, 1.2 % median, 16.8 % at p95 —
-far looser than the colorimetric agreement, and that gap is the metamerism
-the objective is free to exploit. Two details confirm which objective is at
-work:
+per-pixel RMS reflectance error of 3.1 % mean, 1.2 % median, 16.8 % at p95.
+That residual is the measure of how far four inks fall short of spanning an
+arbitrary 36-band reflectance: minimising the index of metamerism moves the
+spectra together, but the printer's spectral selectivity sets a floor below
+which they cannot go. Where that floor bites shows in two places:
 
 * Error tracks reflectance level: 0.008 RMS where mean reflectance is below
-  0.05, rising to 0.143 above 0.60. The bright saturated cows are where the
-  four inks run out of gamut.
+  0.05, rising to 0.143 above 0.60. The bright saturated cows are where four
+  inks run out of both gamut and selectivity.
 * Error is worst at 380–400 nm and 710–730 nm (up to 0.051) and best at
-  450–540 nm (0.006). The end bands are where the observer functions fall to
-  zero, so they contribute almost nothing to the cost and the search leaves
-  them unconstrained.
+  450–540 nm (0.006). An index of metamerism can only see the spectrum
+  through observer functions, and those fall to zero at the ends of the
+  range — so the extremes carry almost no weight in the cost and are left
+  comparatively free. Widening the set of observing conditions tightens the
+  weighted region; it cannot constrain what no observer function sees.
 
 Note also that the source is not entirely a physical target: the abridged
 8-channel encoder reconstructs reflectances spanning −0.601 … 1.368, while
