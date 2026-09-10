@@ -89,6 +89,7 @@ ColorimetricEncoding/
 │   └── Scenarios.md                  # Per-scenario reference (S1a … S5c)
 ├── Illuminants/                      # XML sources for profile E (and profile P)
 │   ├── Lab_float-D50_2deg.xml        #   floating-point Lab @ D50, 2°
+│   ├── Lab_float-D65_2deg-MAT.xml    #   floating-point Lab @ D65, 2° (MAT)
 │   ├── Lab_float-D93_2deg-MAT.xml    #   floating-point Lab @ D93, 2° (MAT)
 │   ├── Lab_int-D50_2deg.xml          #   integer Lab @ D50, 2°
 │   ├── Lab_int-D65_2deg-MAT.xml      #   integer Lab @ D65, 2° (MAT)
@@ -214,6 +215,7 @@ sixteen scenario profiles (consumed by S1a … S7f) are:
 
 ```
 E-Lab_float-D50_2deg.icc            # floating-point Lab @ D50, 2°
+E-Lab_float-D65_2deg-MAT.icc        # floating-point Lab @ D65, 2° (MAT)
 E-Lab_float-D93_2deg-MAT.icc        # floating-point Lab @ D93, 2° (MAT)
 E-Lab_int-D50_2deg.icc              # integer Lab @ D50, 2°
 E-Lab_int-D65_2deg-MAT.icc          # integer Lab @ D65, 2° (MAT)

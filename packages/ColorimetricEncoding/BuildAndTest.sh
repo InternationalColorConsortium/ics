@@ -27,6 +27,7 @@ echo "profile (profile \"P\") from their XML sources in ./Illuminants"
 echo "*******************************************************************************"
 
 iccFromXml Illuminants/Lab_float-D50_2deg.xml         ICC/E-Lab_float-D50_2deg.icc
+iccFromXml Illuminants/Lab_float-D65_2deg-MAT.xml     ICC/E-Lab_float-D65_2deg-MAT.icc
 iccFromXml Illuminants/Lab_float-D93_2deg-MAT.xml     ICC/E-Lab_float-D93_2deg-MAT.icc
 iccFromXml Illuminants/Lab_int-D50_2deg.xml           ICC/E-Lab_int-D50_2deg.icc
 iccFromXml Illuminants/Lab_int-D65_2deg-MAT.xml       ICC/E-Lab_int-D65_2deg-MAT.icc
