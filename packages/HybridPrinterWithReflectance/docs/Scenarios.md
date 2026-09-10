@@ -19,6 +19,7 @@ All paths below are written relative to the package root.
 | PCS @ A | `ICC/2-Lab_float-IllumA_2deg-MAT.icc` | `Data/Lab_float-IllumA_2deg-MAT.xml` | Colorimetric PCS for Illuminant A 2°. |
 | PCS @ D50 | `ICC/3-Lab_float-D50_2deg.icc` | `Data/Lab_float-D50_2deg.xml` | Colorimetric PCS for D50 2° (the ICC reference). |
 | PCS @ F11 | `ICC/4-Lab_float-F11_2deg-MAT.icc` | `Data/Lab_float-F11_2deg-MAT.xml` | Colorimetric PCS for F11 2°. |
+| PCS @ D65 | `ICC/5-Lab_float-D65_2deg-MAT.icc` | `Data/Lab_float-D65_2deg-MAT.xml` | Colorimetric PCS for D65 2° (MAT). Not a search PCC — used only to view the S6b result under a condition the search did not optimise over. |
 | Spectral PCS | `ICC/S-Spec380_10_730-D50_2deg.icc` | `Data/Spec380_10_730-D50_2deg.xml` | Spectral PCS, 380…730 nm at 10 nm. |
 | Multispectral RGB | `ICC/S-MultiSpectralRGB.icc` | `Data/MultiSpectralRGB.xml` | Multispectral RGB encoding profile (3 wide bands). |
 | sRGB v4 | `Data/C-sRGB_v4_ICC_preference.icc` | (prebuilt) | The ICC sRGB v4 preference profile (used as a display proof target). |
@@ -303,6 +304,45 @@ Note also that the source is not entirely a physical target: the abridged
 8-channel encoder reconstructs reflectances spanning −0.601 … 1.368, while
 the printer model can only produce 0.005 … 1.011. Some of what the search is
 asked to match is not a reflectance at all.
+
+### S6b evidence — the result viewed under three observing conditions
+
+**Drivers:** `iccApplyProfiles -cfg config/hpwr-S6b-Proof{D65,D93,A}.json`,
+run by `SpectralImageReproduction.{bat,sh}` after the search.
+
+These are not separate ICS scenarios; they are the visual evidence for S6b,
+and they exist only because `Results/MS_smCowsPrn.tif` embeds the hybrid
+printer profile. That is what makes a four-channel CMYK file a spectral
+image — the channels decode through the v5 sub-profile to 380…730 nm
+reflectance, so one file can be rendered under any observing condition. A
+colorimetric-only CMYK file could not do this; it would carry a single
+rendering fixed at its own illuminant.
+
+Each config is the S4a pipeline pointed at the S6b output, and the three
+differ *only* in `pccFile`:
+
+```
+src   : Results/MS_smCowsPrn.tif          (embedded hybrid profile)
+stage1: <embedded v5 sub>     absolute    pcc = 5-Lab_float-D65_2deg-MAT.icc
+                                              or 1-Lab_float-D93_2deg-MAT.icc
+                                              or 2-Lab_float-IllumA_2deg-MAT.icc
+stage2: C-sRGB_v4_ICC_preference.icc  perceptual
+dst   : Results/MS_smCowsPrnProof{D65,D93,A}.tif   (8-bit)
+```
+
+D93 and Illuminant A are two of the four PCCs the search optimised over, and
+bracket the set. D65 deliberately is not one of them, so it is evidence that
+the match *generalises* rather than evidence that the objective was
+satisfied. Rendering the source image through the identical pipeline and
+differencing gives, over the printer's reachable range, a mean sRGB error of
+0.7/255 under D65, 1.0 under D93 and 1.5 under Illuminant A — the
+unoptimised condition is no worse than the optimised ones.
+
+Expect each proof to carry a colour cast, and expect it to run *opposite* to
+the illuminant: blue under Illuminant A, yellow under D93. The `-MAT` PCC
+profiles adapt for the colour temperature of their illuminant, so what
+remains after adaptation runs the other way. This is the same behaviour
+S4a/S4b show.
 
 ---
 

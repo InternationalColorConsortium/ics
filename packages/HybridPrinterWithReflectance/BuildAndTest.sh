@@ -30,6 +30,7 @@ iccFromXml Data/Lab_float-D93_2deg-MAT.xml     ICC/1-Lab_float-D93_2deg-MAT.icc
 iccFromXml Data/Lab_float-IllumA_2deg-MAT.xml  ICC/2-Lab_float-IllumA_2deg-MAT.icc
 iccFromXml Data/Lab_float-D50_2deg.xml         ICC/3-Lab_float-D50_2deg.icc
 iccFromXml Data/Lab_float-F11_2deg-MAT.xml     ICC/4-Lab_float-F11_2deg-MAT.icc
+iccFromXml Data/Lab_float-D65_2deg-MAT.xml     ICC/5-Lab_float-D65_2deg-MAT.icc
 iccFromXml Data/Spec380_10_730-D50_2deg.xml    ICC/S-Spec380_10_730-D50_2deg.icc
 iccFromXml Data/MultiSpectralRGB.xml           ICC/S-MultiSpectralRGB.icc
 

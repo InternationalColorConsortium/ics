@@ -30,7 +30,8 @@ for required in Data/MS_smCows.tif \
                 ICC/1-Lab_float-D93_2deg-MAT.icc \
                 ICC/2-Lab_float-IllumA_2deg-MAT.icc \
                 ICC/3-Lab_float-D50_2deg.icc \
-                ICC/4-Lab_float-F11_2deg-MAT.icc; do
+                ICC/4-Lab_float-F11_2deg-MAT.icc \
+                ICC/5-Lab_float-D65_2deg-MAT.icc; do
   if [ ! -f "$required" ]; then
     echo "missing $required -- run ./BuildAndTest.sh first" >&2
     exit 1
@@ -49,3 +50,27 @@ iccApplyProfiles -cfg config/hpwr-S6b-SpectralImageReproduction.json
 iccTiffDump      Results/MS_smCowsPrn.tif   || true   # inspection only: non-zero means profile warnings, not failure
 
 echo "Wrote Results/MS_smCowsPrn.tif"
+
+echo "*************************************************************************"
+echo "S6b evidence - proof the reproduction under three observing conditions"
+echo "*************************************************************************"
+
+# Results/MS_smCowsPrn.tif holds four CMYK channels, but it embeds the hybrid
+# printer profile, so those channels decode through the v5 sub-profile to
+# 380...730nm reflectance -- the output of a spectral reproduction is itself a
+# spectral image.  That is what these three steps show: the same file proofed
+# to sRGB under three different PCCs, with only the pccFile differing between
+# the configs.  A colorimetric-only CMYK file could not do this; it would carry
+# one rendering fixed at its own illuminant.
+#
+# D65 is deliberately not one of the four PCCs the search optimised over
+# (D93/A/D50/F11), so it is evidence the match generalises rather than evidence
+# the objective was satisfied.  D93 and A are search PCCs and bracket the range.
+
+iccApplyProfiles -cfg config/hpwr-S6b-ProofD65.json
+iccApplyProfiles -cfg config/hpwr-S6b-ProofD93.json
+iccApplyProfiles -cfg config/hpwr-S6b-ProofA.json
+
+echo "Wrote Results/MS_smCowsPrnProofD65.tif"
+echo "      Results/MS_smCowsPrnProofD93.tif"
+echo "      Results/MS_smCowsPrnProofA.tif"

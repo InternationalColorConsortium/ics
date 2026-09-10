@@ -25,6 +25,7 @@
 @if not exist ICC\2-Lab_float-IllumA_2deg-MAT.icc goto :missing
 @if not exist ICC\3-Lab_float-D50_2deg.icc       goto :missing
 @if not exist ICC\4-Lab_float-F11_2deg-MAT.icc   goto :missing
+@if not exist ICC\5-Lab_float-D65_2deg-MAT.icc   goto :missing
 
 @ECHO *************************************************************************
 @ECHO S6b - Spectral image reproduction (full 600x420, inverse search per pixel)
@@ -39,6 +40,33 @@ iccApplyProfiles -cfg config\hpwr-S6b-SpectralImageReproduction.json
 iccTiffDump Results\MS_smCowsPrn.tif
 
 @ECHO Wrote Results\MS_smCowsPrn.tif
+
+@ECHO *************************************************************************
+@ECHO S6b evidence - proof the reproduction under three observing conditions
+@ECHO *************************************************************************
+
+@REM Results\MS_smCowsPrn.tif holds four CMYK channels, but it embeds the
+@REM hybrid printer profile, so those channels decode through the v5
+@REM sub-profile to 380...730nm reflectance -- the output of a spectral
+@REM reproduction is itself a spectral image.  That is what these three steps
+@REM show: the same file proofed to sRGB under three different PCCs, with only
+@REM the pccFile differing between the configs.  A colorimetric-only CMYK file
+@REM could not do this; it would carry one rendering fixed at its illuminant.
+@REM
+@REM D65 is deliberately not one of the four PCCs the search optimised over
+@REM (D93/A/D50/F11), so it is evidence the match generalises rather than
+@REM evidence the objective was satisfied.  D93 and A are search PCCs.
+
+iccApplyProfiles -cfg config\hpwr-S6b-ProofD65.json
+@if %errorlevel% neq 0 goto :failed
+iccApplyProfiles -cfg config\hpwr-S6b-ProofD93.json
+@if %errorlevel% neq 0 goto :failed
+iccApplyProfiles -cfg config\hpwr-S6b-ProofA.json
+@if %errorlevel% neq 0 goto :failed
+
+@ECHO Wrote Results\MS_smCowsPrnProofD65.tif
+@ECHO       Results\MS_smCowsPrnProofD93.tif
+@ECHO       Results\MS_smCowsPrnProofA.tif
 @goto :done
 
 :missing
