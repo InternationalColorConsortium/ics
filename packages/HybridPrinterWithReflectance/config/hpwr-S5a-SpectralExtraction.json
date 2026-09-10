@@ -1,0 +1,24 @@
+{
+ "imageFiles": {
+  "dstCompression": true,
+  "dstEmbedIcc": true,
+  "dstEncoding": "16Bit",
+  "dstImageFile": "Results/HappyBunniesMSRGB.tif",
+  "dstPlanar": false,
+  "srcImageFile": "Results/HappyBunniesCmyk.tif"
+ },
+ "profileSequence": [
+  {
+   "iccFile": null,
+   "intent": "absolute",
+   "transform": "default",
+   "useV5SubProfile": true
+  },
+  {
+   "iccFile": "ICC/S-MultiSpectralRGB.icc",
+   "intent": "absolute",
+   "transform": "default",
+   "useV5SubProfile": true
+  }
+ ]
+}

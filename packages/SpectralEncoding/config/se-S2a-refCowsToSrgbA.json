@@ -1,0 +1,23 @@
+{
+ "imageFiles": {
+  "dstCompression": true,
+  "dstEmbedIcc": true,
+  "dstEncoding": "8Bit",
+  "dstImageFile": "Results/Preview-cowsA_fromRef.tif",
+  "dstPlanar": false,
+  "srcImageFile": "Data/smCows380_5_780.tif"
+ },
+ "profileSequence": [
+  {
+   "iccFile": null,
+   "intent": "absolute",
+   "pccFile": "ICC/2-Lab_float-IllumA_2deg-MAT.icc",
+   "transform": "default"
+  },
+  {
+   "iccFile": "Data/C-sRGB_v4_ICC_preference.icc",
+   "intent": "relative",
+   "transform": "default"
+  }
+ ]
+}

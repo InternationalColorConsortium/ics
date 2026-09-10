@@ -1,0 +1,24 @@
+{
+ "imageFiles": {
+  "dstCompression": true,
+  "dstEmbedIcc": false,
+  "dstImageFile": "Results/TShirtDesignPrevUW-W.tif",
+  "dstPlanar": false,
+  "srcImageFile": "Data/TShirtDesignCMYKW.tif"
+ },
+ "profileSequence": [
+  {
+   "iccFile": "ICC/P-CMYK-W_Overprint_Profile.icc",
+   "intent": "relative",
+   "interpolation": "tetrahedral",
+   "transform": "default",
+   "useV5SubProfile": true
+  },
+  {
+   "iccFile": "Data/C-sRGB_v4_ICC_preference.icc",
+   "intent": "relative",
+   "interpolation": "tetrahedral",
+   "transform": "default"
+  }
+ ]
+}

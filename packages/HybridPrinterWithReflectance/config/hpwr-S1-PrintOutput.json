@@ -1,0 +1,22 @@
+{
+ "imageFiles": {
+  "dstCompression": true,
+  "dstEmbedIcc": true,
+  "dstEncoding": "16Bit",
+  "dstImageFile": "Results/HappyBunniesCmyk.tif",
+  "dstPlanar": false,
+  "srcImageFile": "Data/HappyBunniesRGB.tif"
+ },
+ "profileSequence": [
+  {
+   "iccFile": null,
+   "intent": "perceptual",
+   "transform": "default"
+  },
+  {
+   "iccFile": "ICC/P-CMYK_Hybrid_Profile.icc",
+   "intent": "perceptual",
+   "transform": "default"
+  }
+ ]
+}

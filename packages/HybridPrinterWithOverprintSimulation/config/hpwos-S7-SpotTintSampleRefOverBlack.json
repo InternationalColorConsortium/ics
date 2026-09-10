@@ -1,0 +1,36 @@
+{
+ "colorData": {
+  "data": [
+   {
+		"n": "Silver",
+    "v": [ 1.0 ]
+   },
+   {
+		"n": "Silver",
+    "v": [ 0.0 ]
+   }
+  ],
+  "encoding": "percent",
+  "srcEncoding": "value",
+  "srcSpace": "nmcl"
+ },
+ "dataFiles": {
+  "dstEncoding": "float",
+  "dstType": "legacy",
+  "srcFile": null,
+  "srcType": "colorData"
+ },
+ "profileSequence": [
+  {
+   "iccFile": "ICC/P-CMYK-S_Overprint_Profile.icc",
+   "intent": "absolute",
+   "transform": "namedSpectralOnBlack",
+   "useV5SubProfile": true
+  },
+  {
+   "iccFile": "ICC/S-Spec380_10_730-D50_2deg.icc",
+   "intent": "absolute",
+   "transform": "default"
+  }
+ ]
+}
